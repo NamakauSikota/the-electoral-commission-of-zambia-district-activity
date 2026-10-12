@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ECZ District Activity Reporting Portal</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f5f7f4;--card:#fff;--tx:#1b2a1f;--mu:#5d6b61;--br:#d5ddd6;--pr:#1e6b3a;--pt:#fff;--ac:#e8a317;--er:#b3261e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111a14;--card:#1a2620;--tx:#e6efe8;--mu:#9bb0a1;--br:#2e4034;--pr:#4cb06f;--pt:#08160d;--ac:#f0b73a;--er:#f2796f}}
+:root[data-theme="dark"]{--bg:#111a14;--card:#1a2620;--tx:#e6efe8;--mu:#9bb0a1;--br:#2e4034;--pr:#4cb06f;--pt:#08160d;--ac:#f0b73a;--er:#f2796f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--pr);color:var(--pt);padding:14px 18px;border-bottom:4px solid var(--ac)}
+header h1{margin:0;font-size:18px}header p{margin:2px 0 0;font-size:13px;opacity:.9}
+nav{display:flex;gap:4px;padding:10px 14px 0;flex-wrap:wrap;max-width:1100px;margin:auto}
+nav button{border:1px solid var(--br);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:8px 8px 0 0;cursor:pointer;font:inherit}
+nav button.on{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+main{max-width:1100px;margin:auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:16px;margin-bottom:14px}
+h2{font-size:16px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+label{display:block;font-size:13px;color:var(--mu);margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--br);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:80px;resize:vertical}
+.full{grid-column:1/-1}
+button.p{background:var(--pr);color:var(--pt);border:0;padding:10px 18px;border-radius:6px;cursor:pointer;font:inherit;font-weight:600}
+button.s{background:transparent;color:var(--pr);border:1px solid var(--pr);padding:8px 14px;border-radius:6px;cursor:pointer;font:inherit}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--br);border-left:4px solid var(--ac);border-radius:8px;padding:12px}
+.kpi b{display:block;font-size:24px;color:var(--pr)}.kpi span{font-size:12px;color:var(--mu)}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--br);vertical-align:top}th{color:var(--mu);font-weight:600;white-space:nowrap}
+.bar{height:10px;background:var(--pr);border-radius:5px;min-width:2px}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;border:1px solid var(--br)}
+.ok{color:var(--pr)}.msg{padding:10px;border-radius:6px;margin-bottom:10px;background:var(--bg);border:1px solid var(--pr)}
+.note{font-size:12.5px;color:var(--mu)}.hide{display:none}
+@media print{header,nav,.noprint{display:none}body{background:#fff;color:#000}}
+</style></head>
+<body>
+<header><h1>Electoral Commission of Zambia — District Activity Reporting Portal</h1>
+<p>Submit district reports by activity. Reports consolidate automatically for Provincial and Headquarters review.</p></header>
+<nav><button data-v="submit" class="on">1. Submit Report</button><button data-v="reports">2. All Reports</button><button data-v="cons">3. Consolidated View</button><button data-v="impv">4. Import Past Reports</button></nav>
+<main>
+<section id="submit" class="view">
+<div class="card"><h2>New district activity report</h2>
+<div id="msg"></div>
+<div class="grid">
+<div><label>Province *</label><select id="prov"></select></div>
+<div><label>District *</label><input id="dist" list="dl" placeholder="e.g. Chilanga"><datalist id="dl"></datalist></div>
+<div><label>Electoral activity *</label><select id="act"></select></div>
+<div><label>Reporting officer *</label><input id="off" placeholder="Name and title"></div>
+<div><label>Phone / email</label><input id="con"></div>
+<div><label>Date from *</label><input type="date" id="d1"></div>
+<div><label>Date to *</label><input type="date" id="d2"></div>
+<div><label>Wards / polling stations covered</label><input id="area"></div>
+<div><label id="l1">Indicator 1</label><input type="number" min="0" id="i1"></div>
+<div><label id="l2">Indicator 2</label><input type="number" min="0" id="i2"></div>
+<div><label>Participants / beneficiaries – Male</label><input type="number" min="0" id="pm"></div>
+<div><label>Participants / beneficiaries – Female</label><input type="number" min="0" id="pf"></div>
+<div><label>Funds used (ZMW)</label><input type="number" min="0" id="fund"></div>
+<div><label>Status</label><select id="st"><option>Completed</option><option>Ongoing</option><option>Not started</option><option>Delayed</option></select></div>
+<div class="full"><label>Summary of activities undertaken *</label><textarea id="sum"></textarea></div>
+<div class="full"><label>Challenges encountered</label><textarea id="ch"></textarea></div>
+<div class="full"><label>Recommendations / action required</label><textarea id="rec"></textarea></div>
+<div class="full"><label>Supporting documents (link, file reference or register no.)</label><input id="ref" placeholder="Paste a link to photos, signed forms, attendance registers…"></div>
+<div class="full"><label>Attach files (PDF, images, CSV or text; up to 20 MB each)</label><input type="file" id="fl" multiple accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.csv,.txt,.md,.json"></div>
+</div>
+<p style="margin-top:14px"><button class="p" id="save">Submit report</button> <span class="note">Reports are visible to all authorised officers.</span></p>
+</div></section>
+
+<section id="impv" class="view hide">
+<div class="card"><h2>Import past reports (CSV)</h2>
+<p class="note">Use this to load earlier reports (previous elections, by-elections, registration phases). Download the template, paste in one row per report, then upload it. Province must be one of the 10 provinces, activity must match the activity names exactly, and dates use YYYY-MM-DD. Rows missing province, district, activity, dates or summary are skipped.</p>
+<p><button class="s" id="tpl">Download CSV template</button></p>
+<div class="grid"><div><label>CSV file</label><input type="file" id="if" accept=".csv"></div></div>
+<p><button class="p" id="ib">Import reports</button></p><div id="im" class="msg">No import run yet.</div></div></section>
+<section id="reports" class="view hide">
+<div class="card noprint"><h2>Filter reports</h2><div class="grid">
+<div><label>Province</label><select id="fp"></select></div><div><label>District</label><input id="fd" placeholder="Any"></div>
+<div><label>Activity</label><select id="fa"></select></div><div><label>Status</label><select id="fs"><option value="">All</option><option>Completed</option><option>Ongoing</option><option>Not started</option><option>Delayed</option></select></div>
+</div></div>
+<div class="card"><div class="sc"><table id="tr"></table></div><p id="e1" class="note"></p></div>
+</section>
+
+<section id="cons" class="view hide">
+<div class="card noprint"><h2>Consolidation filters</h2><div class="grid">
+<div><label>Province</label><select id="cp"></select></div><div><label>District</label><input id="cd" placeholder="Any"></div>
+<div><label>From</label><input type="date" id="c1"></div><div><label>To</label><input type="date" id="c2"></div></div>
+<p><button class="s" id="csv">Download CSV</button> <button class="s" id="prt">Print consolidated report</button></p></div>
+<div class="kpis" id="kp"></div>
+<div class="card"><h2>Consolidated by activity</h2><div class="sc"><table id="ta"></table></div></div>
+<div class="card"><h2>Reporting coverage by province</h2><div class="sc"><table id="tp"></table></div></div>
+<div class="card"><h2>Key challenges &amp; recommendations (latest)</h2><div id="cr"></div></div>
+</section>
+</main>
+<script>
+var PROV=["Central","Copperbelt","Eastern","Luapula","Lusaka","Muchinga","Northern","North-Western","Southern","Western"];
+var ACT=[
+["Voter registration","New registrants","Replacements / transfers"],
+["Inspection of the register of voters","Voters inspected the register","Corrections requested"],
+["Delimitation","Wards / constituencies reviewed","Objections / submissions received"],
+["Nominations","Candidates nominated","Nominations rejected"],
+["Voter education","Sessions held","Materials distributed"],
+["Conflict management","Incidents handled","Conflict meetings held"],
+["Early warning","Early warning alerts","Alerts resolved"],
+["Election Support Centre (ESC)","Calls / reports logged","Cases referred / resolved"],
+["Recruitment of returning officers","Applicants received","Officers appointed"],
+["Recruitment of poll staff","Applicants received","Staff appointed"],
+["Training of returning officers","Officers trained","Training days"],
+["Training of poll staff","Staff trained","Training sessions"],
+["Stakeholder & party liaison meetings","Meetings held","Stakeholders attending"],
+["Election materials & logistics","Items received / dispatched","Shortfalls / damages"],
+["Voting day","Polling stations opened","Incidents reported"],
+["Counting & results management","Stations counted","Results disputes"],
+["Verification of Ballot Paper Account (BPA) forms","BPA forms verified","Forms with discrepancies"],
+["Complaints & petitions","Complaints received","Complaints resolved"],
+["Other activity","Indicator 1","Indicator 2"]];
+var R=[];var $=function(i){return document.getElementById(i)};
+function opts(sel,list,all){sel.innerHTML=(all?'<option value="">All</option>':'<option value="">Select…</option>')+list.map(function(x){return'<option>'+x+'</option>'}).join('')}
+['prov','fp','cp'].forEach(function(i){opts($(i),PROV,i!='prov')});
+opts($('act'),ACT.map(function(a){return a[0]}));opts($('fa'),ACT.map(function(a){return a[0]}),1);
+$('act').onchange=function(){var a=ACT.filter(function(x){return x[0]==$('act').value})[0];$('l1').textContent=a?a[1]:'Indicator 1';$('l2').textContent=a?a[2]:'Indicator 2'};
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){document.querySelectorAll('nav button').forEach(function(x){x.classList.toggle('on',x==b)});document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('hide',v.id!=b.dataset.v)});render()}});
+function esc(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML}
+function n(x){return Number(x)||0}
+function fil(p,d,a,s,f,t){return R.filter(function(r){return(!p||r.prov==p)&&(!d||(r.dist||'').toLowerCase().indexOf(d.toLowerCase())>-1)&&(!a||r.act==a)&&(!s||r.st==s)&&(!f||r.d2>=f)&&(!t||r.d1<=t)})}
+var db=null,col=null;
+function save(){
+ var g=function(i){return $(i).value.trim()};
+ var miss=!g('prov')||!g('dist')||!g('act')||!g('off')||!g('d1')||!g('d2')||!g('sum');
+ if(miss){$('msg').innerHTML='<div class="msg" style="border-color:var(--er)">Please complete all fields marked *.</div>';return}
+ var id='r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+ var rec={prov:g('prov'),dist:g('dist'),act:g('act'),off:g('off'),con:g('con'),d1:g('d1'),d2:g('d2'),area:g('area'),i1:n(g('i1')),i2:n(g('i2')),pm:n(g('pm')),pf:n(g('pf')),fund:n(g('fund')),st:g('st'),sum:g('sum'),ch:g('ch'),rec:g('rec'),ref:g('ref'),ts:Date.now()};
+ if(!col){$('msg').innerHTML='<div class="msg" style="border-color:var(--er)">Shared storage is unavailable. Please sign in and reopen the portal.</div>';return}
+ up($('fl').files).then(function(fs){rec.files=fs;return col.doc(id).set(rec)}).then(function(){$('fl').value='';$('msg').innerHTML='<div class="msg ok">Report submitted and added to the consolidation.</div>';['sum','ch','rec','ref','i1','i2','pm','pf','fund','area'].forEach(function(i){$(i).value=''});scrollTo(0,0)}).catch(function(e){$('msg').innerHTML='<div class="msg" style="border-color:var(--er)">Could not save: '+esc(e&&e.message)+'</div>'});
+}
+function up(fl){fl=[].slice.call(fl||[]);if(!fl.length)return Promise.resolve([]);return claude.use('assets').then(function(a){if(!a)throw new Error('File upload is not available for your account (editors only).');return Promise.all(fl.map(function(f){return a.upload(f).then(function(r){return{n:f.name,u:r.url}})}))})}
+$('save').onclick=save;
+function csvp(t){var rows=[],r=[],c='',q=0,i;for(i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=ch}else if(ch=='"')q=1;else if(ch==','){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';if(r.join('')!='')rows.push(r);r=[]}else c+=ch}r.push(c);if(r.join('')!='')rows.push(r);return rows}
+var H=['province','district','activity','from','to','status','officer','indicator1','indicator2','male','female','funds_zmw','summary','challenges','recommendations','reference'];
+$('tpl').onclick=function(){claude.use('downloads').then(function(d){if(d)d.save({filename:'ecz-import-template.csv',data:H.join(',')+'\n'}).catch(function(){})})};
+$('ib').onclick=function(){var f=$('if').files[0];if(!f||!col){$('im').textContent='Choose a CSV file first and make sure you are signed in.';return}
+f.text().then(function(t){var rs=csvp(t);var hd=rs.shift().map(function(x){return x.trim().toLowerCase()});var ok=0,bad=0,ps=[];
+rs.forEach(function(r,k){var o={};hd.forEach(function(h,j){o[h]=(r[j]||'').trim()});
+if(!o.province||!o.district||!o.activity||!o.from||!o.to||!o.summary||PROV.indexOf(o.province)<0||!ACT.some(function(a){return a[0]==o.activity})){bad++;return}
+ok++;ps.push(col.doc('i'+Date.now().toString(36)+k).set({prov:o.province,dist:o.district,act:o.activity,off:o.officer||'Imported',con:'',d1:o.from,d2:o.to,area:'',i1:n(o.indicator1),i2:n(o.indicator2),pm:n(o.male),pf:n(o.female),fund:n(o.funds_zmw),st:o.status||'Completed',sum:o.summary,ch:o.challenges||'',rec:o.recommendations||'',ref:o.reference||'',ts:Date.now()}))});
+Promise.all(ps).then(function(){$('im').textContent='Imported '+ok+' report(s). Skipped '+bad+' row(s) with missing or unrecognised province, activity, dates or summary.'}).catch(function(e){$('im').textContent='Import failed: '+(e&&e.message)})})};
+function render(){
+ var rows=fil($('fp').value,$('fd').value,$('fa').value,$('fs').value).sort(function(a,b){return b.ts-a.ts});
+ $('tr').innerHTML='<tr><th>District</th><th>Province</th><th>Activity</th><th>Period</th><th>Status</th><th>Part. (M/F)</th><th>Indicators</th><th>Summary</th><th>Officer</th></tr>'+rows.map(function(r){return'<tr><td>'+esc(r.dist)+'</td><td>'+esc(r.prov)+'</td><td>'+esc(r.act)+'</td><td>'+esc(r.d1)+' → '+esc(r.d2)+'</td><td><span class="tag">'+esc(r.st)+'</span></td><td>'+r.pm+' / '+r.pf+'</td><td>'+r.i1+' · '+r.i2+'</td><td>'+esc(r.sum)+(r.ref?'<br><a href="'+(/^https?:/.test(r.ref)?esc(r.ref):'#')+'" target="_blank" rel="noopener">Supporting docs</a>':'')+(r.files||[]).map(function(f){return'<br><a href="'+esc(f.u)+'" target="_blank" rel="noopener">📎 '+esc(f.n)+'</a>'}).join('')+'</td><td>'+esc(r.off)+'</td></tr>'}).join('');
+ $('e1').textContent=rows.length?rows.length+' report(s) shown.':'No reports match. Submit the first one from tab 1.';
+ var c=cons();
+ var tot=function(f){return c.reduce(function(s,r){return s+f(r)},0)};
+ var dset={};c.forEach(function(r){dset[r.prov+'|'+r.dist.toLowerCase()]=1});
+ $('kp').innerHTML=[[c.length,'Reports'],[Object.keys(dset).length,'Districts reporting'],[tot(function(r){return r.pm+r.pf}).toLocaleString(),'Participants'],[c.filter(function(r){return r.st=='Completed'}).length,'Completed'],[c.filter(function(r){return r.st=='Delayed'}).length,'Delayed'],['K'+tot(function(r){return r.fund}).toLocaleString(),'Funds used']].map(function(k){return'<div class="kpi"><b>'+k[0]+'</b><span>'+k[1]+'</span></div>'}).join('');
+ var mx=1;ACT.forEach(function(a){mx=Math.max(mx,c.filter(function(r){return r.act==a[0]}).length)});
+ $('ta').innerHTML='<tr><th>Activity</th><th>Reports</th><th>Districts</th><th>Indicator 1</th><th>Indicator 2</th><th>Participants</th><th>Funds (ZMW)</th><th></th></tr>'+ACT.map(function(a){var x=c.filter(function(r){return r.act==a[0]});var ds={};x.forEach(function(r){ds[r.dist.toLowerCase()]=1});var s=function(f){return x.reduce(function(t,r){return t+f(r)},0)};return'<tr><td><b>'+esc(a[0])+'</b><br><span class="note">'+esc(a[1])+' / '+esc(a[2])+'</span></td><td>'+x.length+'</td><td>'+Object.keys(ds).length+'</td><td>'+s(function(r){return r.i1}).toLocaleString()+'</td><td>'+s(function(r){return r.i2}).toLocaleString()+'</td><td>'+s(function(r){return r.pm+r.pf}).toLocaleString()+'</td><td>'+s(function(r){return r.fund}).toLocaleString()+'</td><td style="width:90px"><div class="bar" style="width:'+Math.round(x.length/mx*100)+'%"></div></td></tr>'}).join('');
+ $('tp').innerHTML='<tr><th>Province</th><th>Districts reporting</th><th>Reports</th><th>Activities covered</th></tr>'+PROV.map(function(p){var x=c.filter(function(r){return r.prov==p});var ds={},as={};x.forEach(function(r){ds[r.dist.toLowerCase()]=1;as[r.act]=1});return'<tr><td>'+p+'</td><td>'+Object.keys(ds).length+'</td><td>'+x.length+'</td><td>'+Object.keys(as).length+' of '+ACT.length+'</td></tr>'}).join('');
+ var iss=c.filter(function(r){return r.ch||r.rec}).sort(function(a,b){return b.ts-a.ts}).slice(0,15);
+ $('cr').innerHTML=iss.length?iss.map(function(r){return'<p><b>'+esc(r.dist)+' – '+esc(r.act)+'</b><br>'+(r.ch?'<span class="note">Challenge:</span> '+esc(r.ch)+'<br>':'')+(r.rec?'<span class="note">Recommendation:</span> '+esc(r.rec):'')+'</p>'}).join(''):'<p class="note">No challenges recorded yet.</p>';
+}
+function cons(){return fil($('cp').value,$('cd').value,'','',$('c1').value,$('c2').value)}
+['fp','fd','fa','fs','cp','cd','c1','c2'].forEach(function(i){$(i).oninput=render;$(i).onchange=render});
+$('prt').onclick=function(){print()};
+$('csv').onclick=function(){
+ var h=['province','district','activity','from','to','status','officer','indicator1','indicator2','male','female','funds_zmw','summary','challenges','recommendations','reference'];
+ var q=function(v){return'"'+String(v==null?'':v).replace(/"/g,'""')+'"'};
+ var t=[h.join(',')].concat(cons().map(function(r){return[r.prov,r.dist,r.act,r.d1,r.d2,r.st,r.off,r.i1,r.i2,r.pm,r.pf,r.fund,r.sum,r.ch,r.rec,r.ref].map(q).join(',')})).join('\n');
+ if(window.claude&&claude.use)claude.use('downloads').then(function(d){if(d)d.save({filename:'ecz-consolidated-report.csv',data:t}).catch(function(){});else alert('Download is not available in this view.')});
+};
+render();
+if(window.claude&&claude.use){claude.use('db').then(function(d){
+ if(!d){$('msg').innerHTML='<div class="msg">Sign in to claude.ai to submit and view shared reports.</div>';return}
+ db=d;col=d.collection('reports');
+ col.onSnapshot(function(s){R=s.docs.map(function(x){return x.data()}).filter(Boolean);render()},function(){});
+}).catch(function(){})}
+</script></body></html>
